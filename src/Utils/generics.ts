@@ -247,6 +247,21 @@ export const saveQRIfNecessaryListener = (ev: CommonBaileysEventEmitter<any>, lo
 	})
 }
 
+export const printQRDataUrlListener = (ev: CommonBaileysEventEmitter<any>, logger: Logger) => {
+	ev.on('connection.update', async({ qr }) => {
+		if(qr) {
+			const QRCode = await import('qrcode')
+				.catch(err => {
+					logger.error('qrcode not added as dependency')
+					console.log('qrcode not added as dependency')
+				})
+			const url = await QRCode?.toDataURL(qr)
+			logger.info(url)
+			console.log(url)
+		}
+	})
+}
+
 /**
  * utility that fetches latest baileys version from the master branch.
  * Use to ensure your WA connection is always on the latest version
